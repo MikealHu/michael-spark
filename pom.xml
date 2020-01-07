@@ -11,6 +11,9 @@
 
     <modules>
         <module>common/network-common</module>
+        <module>example/spark-common</module>
+        <module>example/spark-example</module>
+        <module>spark-core</module>
     </modules>
 
     <name>michael-spark</name>
