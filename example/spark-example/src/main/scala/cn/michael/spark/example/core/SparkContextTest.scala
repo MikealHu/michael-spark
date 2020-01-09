@@ -1,6 +1,5 @@
 package cn.michael.spark.example.core
 
-import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -17,6 +16,15 @@ object SparkContextTest {
         val sc = new SparkContext(sparkConf)
 
         val rdd = sc.parallelize(List("java hadoop spark scala"))
+
+        val result = rdd
+            .flatMap {x => x.split(" ")}
+            .map((_, 1))
+            .reduceByKey(_ + _)
+
+        result.foreach(x => println(x))
+
+        sc.stop()
     }
 
 }
