@@ -35,6 +35,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * 在完成创建新的TransportClient之前，将运行所有给定的{@link TransportClientBootstrap}。
  */
 public class TransportClientFactory implements Closeable {
+
+    /** 客户端数据池 */
+    private static class ClientPool {
+        TransportClient[] clients;
+        Object[] locks;
+
+        ClientPool(int size) {
+            clients = new TransportClient[size];
+            locks = new Object[size];
+            for (int i = 0; i < size; i++) {
+                locks[i] = new Object();
+            }
+        }
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(TransportClientFactory.class);
 
     private final TransportContext context;
@@ -42,9 +57,7 @@ public class TransportClientFactory implements Closeable {
     private final List<TransportClientBootstrap> clientBootstraps;
     private final ConcurrentHashMap<SocketAddress, ClientPool> connectionPool;
 
-    /**
-     * Random number generator for picking connections between peers.
-     */
+    /** 随机数生成器，用于选择对等体之间的连接 */
     private final Random rand;
     private final int numConnectionsPerPeer;
 
@@ -83,20 +96,6 @@ public class TransportClientFactory implements Closeable {
     @Override
     public void close() throws IOException {
 
-    }
-
-    /**** 客户端数据池 ****/
-    private static class ClientPool {
-        TransportClient[] clients;
-        Object[] locks;
-
-        ClientPool(int size) {
-            clients = new TransportClient[size];
-            locks = new Object[size];
-            for (int i = 0; i < size; i++) {
-                locks[i] = new Object();
-            }
-        }
     }
 
     /**
